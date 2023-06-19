@@ -26,3 +26,25 @@ SELECT
   order_items
 HAVING item_total > 500
 ORDER BY item_total DESC;
+
+
+-- Grouping sums and grand totals, with rollup
+SELECT
+  IF(GROUPING(c.category_name) = 1,
+    'Grand Total',
+    c.category_name) AS category_name,
+  IF(GROUPING(p.product_name) = 1,
+    'Category Total',
+    p.prodct_name) AS product_name,
+    SUM(o.product_id) AS total_quantity
+FROM
+  categories c,
+  products p,
+  order_items o
+WHERE
+  c.category_id = p.category_id
+  AND p.product_id = o.product_id
+GROUP BY category_name, product_name WITH ROLLUP
+HAVING GROUPING(c.category) = 1
+  OR GROUPING(p.product_name) =1;
+  
